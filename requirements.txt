@@ -1,7 +1,4 @@
-openpyxl
-streamlit==1.39.0
+streamlit
 pandas
-matplotlib
-numpy
-openai
-tabulate
+openpyxl  
+xlrd      
