@@ -13,7 +13,7 @@ st.markdown('#### Updated: 18/08/2025')
 
 excel_file = 'COUNTRY_MOMENTUM_FILTER.xlsx'
 sheet_name = 'FILTER'
-use_cols = "A:F"                          
+use_cols = "A:G"                          
 header_row = 0                            
 
 # ---------- Helpers ----------
@@ -50,7 +50,7 @@ def coerce_percent(col: pd.Series) -> pd.Series:
 df = load_excel_data(excel_file, sheet_name, use_cols, header_row, nrows=None)
 
 # Ensure exact column order (rename if your sheet uses spaces/variants)
-expected = ["ETF", "COUNTRY", "CATEGORY", "CURRENT_MEAN", "STD_DEV", "2_SIGMA"]
+expected = ["ETF", "COUNTRY", "CATEGORY", "CURRENT_RETURNS", "MEAN", "STD_DEV", "2_SIGMA"]
 df.columns = expected  # if your headers already match, this is a no-op
 
 # Coerce percentage columns
