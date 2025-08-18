@@ -54,7 +54,7 @@ expected = ["ETF", "COUNTRY", "CATEGORY", "CURRENT_RETURNS", "MEAN", "STD_DEV", 
 df.columns = expected  # if your headers already match, this is a no-op
 
 # Coerce percentage columns
-pct_cols = ["CURRENT_MEAN", "STD_DEV", "2_SIGMA"]
+pct_cols = ["CURRENT_RETURNS", "MEAN", "STD_DEV", "2_SIGMA"]
 for c in pct_cols:
     if c in df.columns:
         df[c] = coerce_percent(df[c])
