@@ -12,7 +12,7 @@ st.header('COUNTRY MOMENTUM FILTER')
 st.markdown('#### Updated: 18/08/2025')
 
 excel_file = 'COUNTRY_MOMENTUM_FILTER.xlsx'
-sheet_name1 = 'FILTER'
+sheet_name = 'FILTER'
 use_cols = "A:F"                          
 header_row = 0                            
 
