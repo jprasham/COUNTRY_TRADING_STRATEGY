@@ -3,16 +3,17 @@ import streamlit as st
 from typing import Optional
 
 # Set Streamlit page configuration
-st.set_page_config(page_title='COUNTRY MOMENTUM FILTER', page_icon=':bar_chart:', layout = "wide")
+st.set_page_config(page_title='COUNTRY TRADING STRATEGY', page_icon=':bar_chart:', layout = "wide")
 
 # Display header for the dashboard
-st.header('COUNTRY MOMENTUM FILTER')
+st.header('COUNTRY TRADING STRATEGY')
 
 # Display the last update date
-st.markdown('#### Updated: 18/08/2025')
+st.markdown('#### Updated: 19/08/2025')
 
-excel_file = 'COUNTRY_MOMENTUM_FILTER.xlsx'
-sheet_name = 'FILTER'
+excel_file = 'COUNTRY_TRADING_STRATEGY.xlsx'
+sheet_name1 = 'FILTER1'
+sheet_name2 = 'FILTER2'
 use_cols = "A:G"                          
 header_row = 0                            
 
@@ -47,7 +48,7 @@ def coerce_percent(col: pd.Series) -> pd.Series:
     return pd.to_numeric(cleaned, errors='coerce') / 100.0
 
 # ---------- Load & Clean ----------
-df = load_excel_data(excel_file, sheet_name, use_cols, header_row, nrows=None)
+df = load_excel_data(excel_file, sheet_name1, use_cols, header_row, nrows=None)
 
 # Ensure exact column order (rename if your sheet uses spaces/variants)
 expected = ["ETF", "COUNTRY", "CATEGORY", "CURRENT_RETURNS", "MEAN", "STD_DEV", "2_SIGMA"]
@@ -68,9 +69,33 @@ styler = (
       .hide(axis="index")
 )
 
-
+st.subheader("Countries above 2 Sigma")
 st.table(styler)
 
+# ---------- Load & Clean ----------
+df = load_excel_data(excel_file, sheet_name2, use_cols, header_row, nrows=None)
+
+# Ensure exact column order (rename if your sheet uses spaces/variants)
+expected = ["ETF", "COUNTRY", "CATEGORY", "CURRENT_RETURNS", "MEAN", "STD_DEV", "2_SIGMA"]
+df.columns = expected  # if your headers already match, this is a no-op
+
+# Coerce percentage columns
+pct_cols = ["CURRENT_RETURNS", "MEAN", "STD_DEV", "2_SIGMA"]
+for c in pct_cols:
+    if c in df.columns:
+        df[c] = coerce_percent(df[c])
+
+# ---------- Display (styled like the screenshot) ----------
+# Use pandas Styler for bold ETF and percentage formatting
+styler = (
+    df.style
+      .format({c: "{:.1%}" for c in pct_cols}, na_rep="-")
+      .set_properties(subset=["ETF"], **{"font-weight": "bold"})
+      .hide(axis="index")
+)
+
+st.subheader("Countries below 2 Sigma")
+st.table(styler)
 
 
 
