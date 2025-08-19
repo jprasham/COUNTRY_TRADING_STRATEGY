@@ -78,7 +78,7 @@ st.subheader("Countries above 2 Sigma")
 st.table(styler)
 st.markdown(
     "Countries trading above their 2-sigma threshold of monthly returns "
-    "should be bought in staggered intervals of three days."
+    "should be considered for conservative buying approach and should be bought in staggered intervals of three days."
 )
 
 # ---------- Load & Clean ----------
