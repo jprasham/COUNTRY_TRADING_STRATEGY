@@ -14,7 +14,7 @@ st.markdown('#### Updated: 19/08/2025')
 excel_file = 'COUNTRY_TRADING_STRATEGY.xlsx'
 sheet_name1 = 'FILTER1'
 sheet_name2 = 'FILTER2'
-use_cols = "A:G"                          
+use_cols = "A:I"                          
 header_row = 0                            
 
 # ---------- Helpers ----------
@@ -48,23 +48,53 @@ def coerce_percent(col: pd.Series) -> pd.Series:
     return pd.to_numeric(cleaned, errors='coerce') / 100.0
 
 # ---------- Load & Clean ----------
+# ---------- Load & Clean ----------
 df = load_excel_data(excel_file, sheet_name1, use_cols, header_row, nrows=None)
 
-# Ensure exact column order (rename if your sheet uses spaces/variants)
-expected = ["ETF", "COUNTRY", "CATEGORY", "CURRENT_RETURNS", "MEAN", "STD_DEV", "2_SIGMA"]
-df.columns = expected  # if your headers already match, this is a no-op
+# If your sheet header names already match, this will be a no-op.
+expected = ["ETF", "COUNTRY", "CATEGORY",
+            "CURRENT_RETURNS", "MEAN", "STD_DEV", "2_SIGMA",
+            "CURRENT_PRICE", "200 DMA"]
+df.columns = expected[:len(df.columns)]  # keep safe if fewer cols returned
+# Reorder if the sheet contains them in any order
+df = df[[c for c in expected if c in df.columns]]
 
-# Coerce percentage columns
-pct_cols = ["CURRENT_RETURNS", "MEAN", "STD_DEV", "2_SIGMA"]
+# --- helpers ---
+def coerce_percent(s):
+    # turns "9.3%", " 9.3 %", 0.093 -> 0.093 as float
+    return (s.astype(str)
+             .str.replace('%', '', regex=False)
+             .str.replace(',', '', regex=False)
+             .str.strip()
+             .replace({'': None})
+             .astype(float)) / 100.0
+
+def coerce_num(s):
+    # turns "80.3", "80,3", " 80.3 " -> 80.3 as float
+    return (s.astype(str)
+             .str.replace(',', '', regex=False)
+             .str.strip()
+             .replace({'': None})
+             .astype(float))
+
+# Coerce percentage & numeric columns
+pct_cols = [c for c in ["CURRENT_RETURNS", "MEAN", "STD_DEV", "2_SIGMA"] if c in df.columns]
+num_cols = [c for c in ["CURRENT_PRICE", "200 DMA"] if c in df.columns]
+
 for c in pct_cols:
-    if c in df.columns:
-        df[c] = coerce_percent(df[c])
+    df[c] = coerce_percent(df[c])
+
+for c in num_cols:
+    df[c] = coerce_num(df[c])
 
 # ---------- Display (styled like the screenshot) ----------
-# Use pandas Styler for bold ETF and percentage formatting
 styler = (
     df.style
-      .format({c: "{:.1%}" for c in pct_cols}, na_rep="-")
+      .format(
+          {**{c: "{:.1%}" for c in pct_cols},   # 1 decimal place for %
+           **{c: "{:.1f}" for c in num_cols}}   # 1 decimal place for numbers
+          , na_rep="-"
+      )
       .set_properties(subset=["ETF"], **{"font-weight": "bold"})
       .hide(axis="index")
 )
@@ -72,24 +102,54 @@ styler = (
 st.subheader("Countries above 2 Sigma")
 st.table(styler)
 
+
 # ---------- Load & Clean ----------
 df = load_excel_data(excel_file, sheet_name2, use_cols, header_row, nrows=None)
 
-# Ensure exact column order (rename if your sheet uses spaces/variants)
-expected = ["ETF", "COUNTRY", "CATEGORY", "CURRENT_RETURNS", "MEAN", "STD_DEV", "2_SIGMA"]
-df.columns = expected  # if your headers already match, this is a no-op
+# If your sheet header names already match, this will be a no-op.
+expected = ["ETF", "COUNTRY", "CATEGORY",
+            "CURRENT_RETURNS", "MEAN", "STD_DEV", "2_SIGMA",
+            "CURRENT_PRICE", "200 DMA"]
+df.columns = expected[:len(df.columns)]  # keep safe if fewer cols returned
+# Reorder if the sheet contains them in any order
+df = df[[c for c in expected if c in df.columns]]
 
-# Coerce percentage columns
-pct_cols = ["CURRENT_RETURNS", "MEAN", "STD_DEV", "2_SIGMA"]
+# --- helpers ---
+def coerce_percent(s):
+    # turns "9.3%", " 9.3 %", 0.093 -> 0.093 as float
+    return (s.astype(str)
+             .str.replace('%', '', regex=False)
+             .str.replace(',', '', regex=False)
+             .str.strip()
+             .replace({'': None})
+             .astype(float)) / 100.0
+
+def coerce_num(s):
+    # turns "80.3", "80,3", " 80.3 " -> 80.3 as float
+    return (s.astype(str)
+             .str.replace(',', '', regex=False)
+             .str.strip()
+             .replace({'': None})
+             .astype(float))
+
+# Coerce percentage & numeric columns
+pct_cols = [c for c in ["CURRENT_RETURNS", "MEAN", "STD_DEV", "2_SIGMA"] if c in df.columns]
+num_cols = [c for c in ["CURRENT_PRICE", "200 DMA"] if c in df.columns]
+
 for c in pct_cols:
-    if c in df.columns:
-        df[c] = coerce_percent(df[c])
+    df[c] = coerce_percent(df[c])
+
+for c in num_cols:
+    df[c] = coerce_num(df[c])
 
 # ---------- Display (styled like the screenshot) ----------
-# Use pandas Styler for bold ETF and percentage formatting
 styler = (
     df.style
-      .format({c: "{:.1%}" for c in pct_cols}, na_rep="-")
+      .format(
+          {**{c: "{:.1%}" for c in pct_cols},   # 1 decimal place for %
+           **{c: "{:.1f}" for c in num_cols}}   # 1 decimal place for numbers
+          , na_rep="-"
+      )
       .set_properties(subset=["ETF"], **{"font-weight": "bold"})
       .hide(axis="index")
 )
