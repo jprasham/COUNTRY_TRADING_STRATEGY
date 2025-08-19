@@ -78,7 +78,7 @@ st.subheader("Countries above 2 Sigma")
 st.markdown(
     "If buying any of the countries listed below that are trading above their 2-sigma threshold of monthly returns, use a conservative approach and buy in staggered intervals of 3–4 days."
 )
-st.table(styler
+st.table(styler)
 
 # ---------- Load & Clean ----------
 df = load_excel_data(excel_file, sheet_name2, use_cols, header_row, nrows=None)
