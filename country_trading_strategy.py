@@ -76,6 +76,10 @@ styler = (
 
 st.subheader("Countries above 2 Sigma")
 st.table(styler)
+st.markdown(
+    "Countries trading above their 2-sigma threshold of monthly returns "
+    "should be bought in staggered intervals of three days."
+)
 
 # ---------- Load & Clean ----------
 df = load_excel_data(excel_file, sheet_name2, use_cols, header_row, nrows=None)
@@ -106,5 +110,9 @@ styler = (
 st.subheader("Countries below 2 Sigma")
 st.table(styler)
 
+st.markdown(
+    "Countries trading below their 2-sigma threshold of monthly returns "
+    "may be considered for aggressive buying."
+)
 
 
