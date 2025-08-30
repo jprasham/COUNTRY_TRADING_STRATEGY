@@ -9,9 +9,9 @@ st.set_page_config(page_title='COUNTRY TRADING STRATEGY', page_icon=':bar_chart:
 st.header('COUNTRY TRADING STRATEGY')
 
 # Display the last update date
-st.markdown('#### Updated: 19/08/2025')
+st.markdown('#### Updated: 29/08/2025')
 
-excel_file = 'COUNTRY_TRADING_STRATEGY.xlsx'
+excel_file = 'COUNTRY_TRADING_STRATEGY_29.xlsx'
 sheet_name1 = 'FILTER1'
 sheet_name2 = 'FILTER2'
 use_cols = "A:I"                          
