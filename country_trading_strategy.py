@@ -11,7 +11,7 @@ st.header('COUNTRY TRADING STRATEGY')
 # Display the last update date
 st.markdown('#### Updated: 17/01/2026')
 
-excel_file = 'COUNTRY_TRADING_STRATEGY_10.xlsx'
+excel_file = 'COUNTRY_TRADING_STRATEGY_17.xlsx'
 sheet_name1 = 'FILTER1'
 sheet_name2 = 'FILTER2'
 use_cols = "A:I"                          
